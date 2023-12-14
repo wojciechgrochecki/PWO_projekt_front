@@ -9,7 +9,6 @@ export default function RegistrationForm() {
     username: "user2",
     password: "user2",
   });
-  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -21,9 +20,7 @@ export default function RegistrationForm() {
       navigate("/login");
     } catch (error) {
       if (error.response) {
-        //serwer zwrócił status
       } else if (error.request) {
-        //wysłano zapytanie ale nie została zwrócona odpowiedź od serwera
         console.log(error);
         toast.dismiss();
         toast.error("Błąd serwera");
