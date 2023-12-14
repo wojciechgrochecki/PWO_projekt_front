@@ -33,6 +33,12 @@ export const transformData = (data, normalized = true) => {
   const minInterestRate = Math.min(...interestRatesArray);
   const maxInterestRate = Math.max(...interestRatesArray);
 
+  console.log(minHousePrice, maxHousePrice);
+
+  if (minHousePrice === maxHousePrice || minInterestRate === maxInterestRate) {
+    throw new Error("Minimum and maximum values are equal. Division by zero.");
+  }
+
   return {
     housePrices: data.housePrices.map(
       (house) => (house.value - minHousePrice) / (maxHousePrice - minHousePrice)
