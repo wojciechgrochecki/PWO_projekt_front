@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+:root {
+  --large-font: 25px;
+  --normal-font: 20px;
+  --label-color: #353e50;
+  --danger: #dc3545;
+  --success: #198754;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Roboto;
+}
+
+body,
+html {
+  height: 100%;
+  background-color: whitesmoke;
+}
