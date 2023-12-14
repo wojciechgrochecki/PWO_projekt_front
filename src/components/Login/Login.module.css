@@ -65,9 +65,10 @@
     box-shadow: 0 0 0 1px orange;
 }
 
-.form h3 {
-    color: var(--label-color);
+.form label {
+    font-weight: bold;
     font-size: medium;
+    color: var(--label-color);
 }
 
 
