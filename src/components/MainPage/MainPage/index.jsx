@@ -5,110 +5,75 @@ import { useAuth } from "../../../hooks/auth";
 import Chart from "chart.js/auto";
 import { CategoryScale } from "chart.js";
 import LineChart from "../LineChart";
-import jwt_decode from "jwt-decode";
+import { transformData, createChartData } from "../../../utils/chart";
 
 Chart.register(CategoryScale);
 
 export default function MainPage() {
-  const [countryNames, setCountryNames] = useState([]);
-  const [chartTitle, setChartTitle] = useState(null);
-  const [chartData, setChartData] = useState(null);
-  const [gotCountryNames, setGotCountryNames] = useState(false);
   const { token } = useAuth();
+  const [countryNames, setCountryNames] = useState([]);
+  const [chartData, setChartData] = useState(null);
+  const [recievedData, setRecievedData] = useState(null);
 
   useEffect(() => {
-    const url = "http://localhost:8080/api/Country/GetAll";
-
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
     axios
-      .get(url, config)
+      .get("countries", {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      })
       .then((response) => {
-        setCountryNames(response.data.data);
-        console.log(response.data.data);
-        setGotCountryNames(true);
+        setCountryNames(response.data);
       })
       .catch((error) => {
-        setGotCountryNames(false);
         console.error(error);
       });
   }, [token]);
 
   function getGraphInfo(countryId) {
-    const url = `http://localhost:8080/api/Country/${countryId}`;
-
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
     axios
-      .get(url, config)
+      .get(`countries/${countryId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
-        let data = response.data.data;
+        let data = response.data;
         data.housePrices = data.housePrices.filter((price) => {
           return price.housePriceMeasure.subject === "REAL";
         });
-        console.log(data);
-        const housePricesArray = data.housePrices.map((obj) => obj.value);
-        const interestRatesArray = data.interestRates.map((obj) => obj.value);
-
-        console.log(housePricesArray);
-        console.log(interestRatesArray);
-
-        const minHousePrice = Math.min(...housePricesArray);
-        const maxHousePrice = Math.max(...housePricesArray);
-
-        const minInterestRate = Math.min(...interestRatesArray);
-        const maxInterestRate = Math.max(...interestRatesArray);
-
-        console.log("Min housePrice:", minHousePrice);
-        console.log("Max housePrice:", maxHousePrice);
-
-        console.log("Min intRate:", minInterestRate);
-        console.log("Max intRate:", maxInterestRate);
-
-        let chartD = {
-          labels: data.housePrices.map((house) => {
-            return house.year;
-          }),
-          datasets: [
-            {
-              label: "House Prices",
-              data: data.housePrices.map((house) => {
-                return (
-                  (house.value - minHousePrice) /
-                  (maxHousePrice - minHousePrice)
-                );
-              }),
-            },
-            {
-              label: "Interest Rates",
-              data: data.interestRates.map((interestRate) => {
-                return (
-                  (interestRate.value - minInterestRate) /
-                  (maxInterestRate - minInterestRate)
-                );
-              }),
-            },
-          ],
-        };
-        setChartTitle(data.countryName);
-        setChartData(chartD);
+        displayNormalizedData(data);
+        setRecievedData(data);
       })
       .catch((error) => {
-        // Handle error
         console.error(error);
       });
   }
 
+  const displayRawData = (data) => {
+    const rawData = transformData(data, false);
+    const chartData = createChartData(
+      rawData,
+      data.housePrices.map((house) => house.year)
+    );
+    chartData.title = `${data.countryName} (Surowe dane)`;
+    setChartData(chartData);
+  };
+
+  const displayNormalizedData = (data) => {
+    const normalizedData = transformData(data, true);
+    const chartData = createChartData(
+      normalizedData,
+      data.housePrices.map((house) => house.year)
+    );
+    chartData.title = `${data.countryName} (Znormalizowane dane)`;
+    setChartData(chartData);
+  };
+
   return (
     <div className={style["main-wrap"]}>
       <ul className={style["country-names"]}>
-        {gotCountryNames ? (
+        {countryNames?.length !== 0 ? (
           countryNames.map((c) => {
             return (
               <li onClick={() => getGraphInfo(c.id)} key={c.id}>
@@ -118,17 +83,29 @@ export default function MainPage() {
           })
         ) : (
           <div className={style["no-countries-message"]}>
-            No countries in database
+            Brak krajów w bazie danych
           </div>
         )}
       </ul>
-      {chartData ? (
-        <LineChart chartData={chartData} title={chartTitle} />
-      ) : (
-        <div className={style["select-country-message"]}>
-          No country selected
-        </div>
-      )}
+      <div>
+        {chartData !== null && (
+          <div className={style["action-buttons"]}>
+            <button onClick={() => displayNormalizedData(recievedData)}>
+              Znormalizuj
+            </button>
+            <button onClick={() => displayRawData(recievedData)}>
+              Surowe dane
+            </button>
+          </div>
+        )}
+        {chartData ? (
+          <LineChart chartData={chartData} />
+        ) : (
+          <div className={style["select-country-message"]}>
+            Nie wybrano kraju do wyświetlenia
+          </div>
+        )}
+      </div>
     </div>
   );
 }
