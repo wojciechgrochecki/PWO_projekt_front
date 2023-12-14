@@ -1,0 +1,63 @@
+.two-row-grid {
+    display: grid;
+    grid-template-rows: max-content 1fr;
+    gap: 20px;
+}
+
+.button-panel {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.button-panel button {
+    min-width: 100px;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    color: white;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+}
+
+.button-panel .button-get {
+    background-color: #0A6EBD;
+}
+
+.button-panel .button-post {
+    background-color: var(--success);
+}
+
+.button-panel .button-put {
+    background-color: #FFA41B;
+}
+
+.button-panel .button-delete {
+    background-color: var(--danger);
+}
+
+.form-wrap {
+    display: flex;
+    justify-content: center;
+    margin: auto;
+    flex-direction: column;
+    width: fit-content;
+    gap: 5px;
+}
+
+.form-wrap form {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.get-form input {
+    outline: none;
+    border: 1px solid black;
+    padding: 5px;
+}
+
+.input-wrap {
+    display: flex;
+    flex-direction: column;
+}
