@@ -1,0 +1,44 @@
+.main-wrap {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    padding: 40px 20px;
+    max-width: 1400px;
+    margin: auto;
+    column-gap: 100px;
+}
+
+
+.main-wrap ul {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+}
+
+.main-wrap ul li {
+    text-decoration: none;
+    list-style-type: none;
+    cursor: pointer;
+    transition: all 0.2s;
+
+}
+
+.main-wrap ul li:hover {
+    color: rgb(17, 163, 78);
+
+}
+
+.country-names {
+    flex-shrink: 0;
+}
+
+.chart-container {
+    width: 100px;
+}
+
+.no-countries-message,
+.select-country-message {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+}
