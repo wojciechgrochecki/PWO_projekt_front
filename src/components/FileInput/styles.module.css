@@ -1,0 +1,28 @@
+.seed-database-button {
+    padding: 10px;
+    text-align: center;
+    width: fit;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    background-color: var(--success);
+    color: white;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+}
+
+.button-wrap {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+}
+
+.button-wrap>button {
+    width: fit;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    background-color: turquoise;
+    color: white;
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+}
