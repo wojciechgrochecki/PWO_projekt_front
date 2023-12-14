@@ -42,7 +42,7 @@ export default function RegistrationForm() {
         <h1>Utwórz nowe konto</h1>
         <form className={styles["form"]} onSubmit={handleSubmit}>
           <div>
-            <h3>Login</h3>
+            <label htmlFor="username">Login</label>
             <input
               type="text"
               name="username"
@@ -53,7 +53,7 @@ export default function RegistrationForm() {
             />
           </div>
           <div>
-            <h3>Hasło</h3>
+            <label htmlFor="password">Hasło</label>
             <input
               type="password"
               name="password"
