@@ -41,9 +41,10 @@ export default function Login() {
       <h1>Zaloguj się na swoje konto</h1>
       <form className={styles["form"]} onSubmit={handleSubmit}>
         <div>
-          <h3>Login</h3>
+          <label htmlFor="username">Login</label>
           <input
             type="text"
+            id="username"
             name="username"
             onChange={handleChange}
             value={formData.username}
@@ -52,9 +53,10 @@ export default function Login() {
           />
         </div>
         <div>
-          <h3>Hasło</h3>
+          <label htmlFor="password">Hasło</label>
           <input
             type="password"
+            id="password"
             name="password"
             onChange={handleChange}
             value={formData.password}
