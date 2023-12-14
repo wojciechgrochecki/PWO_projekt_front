@@ -1,85 +1,63 @@
-import style from './styles.module.css'
-import axios from 'axios'
-import { useAuth } from '../../../hooks/auth'
-import toast, { Toaster } from 'react-hot-toast';
+import style from "./styles.module.css";
+import { useAuth } from "../../../hooks/auth";
+import axios from "axios";
 
 export default function SeedDatabase() {
+  const { token } = useAuth();
 
-    const { token } = useAuth();
+  const downloadFile = (blob, fileName, fileType) => {
+    const url = window.URL.createObjectURL(new Blob([blob]));
+    const a = document.createElement("a");
+    a.href = url;
+    a.innerText = "Click me!";
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
 
-    const config = {
-        method: 'POST',
+  async function exportToJson() {
+    try {
+      const response = await axios.get("db/json_data", {
         headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        }
-    };
+          Authorization: `Bearer ${token}`,
+        },
+        responseType: "arraybuffer",
+      });
 
-    function exportToJson() {
-        let url = "http://localhost:8080/api/Export/ExportToJson";
-
-        fetch(url, config).
-            then((response) => {
-                console.log(response);
-                if (response.ok) {
-                    return response.json()
-                }
-                else {
-                    throw Error('Error ' + response.status + ': ' + response.statusText);
-                }
-
-            })
-            .then((response) => {
-                if (response.success) {
-                    console.log(response);
-                    toast.success(response.message);
-                }
-                else {
-                    console.log(response);
-                    toast.error(response.message);
-                }
-
-            })
-            .catch((error) => {
-                toast.error(error.message);
-            });
-
+      const blob = new Blob([response.data], { type: "application/json" });
+      downloadFile(blob, "interest_rates.json", "application/json");
+    } catch (error) {
+      console.error("Error exporting JSON data:", error);
     }
+  }
 
-    function exportToXml() {
-        let url = "http://localhost:8080/api/Export/ExportToXml";
-        fetch(url, config).
-            then((response) => {
-                if (response.ok) {
-                    return response.json()
-                }
-                else {
-                    throw Error('Error ' + response.status + ': ' + response.statusText);
-                }
+  async function exportToXml() {
+    try {
+      const response = await axios.get("db/xml_data", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-            }).then((response) => {
-                if (response.success) {
-                    console.log(response);
-                    toast.success(response.message);
-                }
-                else {
-                    console.log(response);
-                    toast.error(response.message);
-                }
-
-            })
-            .catch((error) => {
-                toast.error(error.message);
-            });
-
+      const blob = new Blob([response.data], { type: "application/xml" });
+      downloadFile(blob, "house_prices.xml", "application/json");
+    } catch (error) {
+      console.error("Error exporting XML data:", error);
     }
+  }
 
-
-
-    return (<div className={style["export-database-wrap"]}>
-        <Toaster />
-        <button onClick={exportToJson} className={style["export-database-button"]}>Export to Json</button>
-        <button onClick={exportToXml} className={style["export-database-button"]}>Export to Xml</button>
-
-    </div>)
+  return (
+    <div className={style["export-database-wrap"]}>
+      <button
+        onClick={exportToJson}
+        className={style["export-database-button"]}
+      >
+        Wyeksportuj stopy procentowe
+      </button>
+      <button onClick={exportToXml} className={style["export-database-button"]}>
+        Wyeksportuj ceny mieszkań
+      </button>
+    </div>
+  );
 }
